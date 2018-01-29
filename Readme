@@ -4,5 +4,6 @@ Assumptions:
     - A user can be listed as following nobody
     - Tweets can contain ">"
     - Tweets can't be empty
+    - Program should stop if format of either of the files is invalid?
 
 
