@@ -21,6 +21,11 @@ class TweetParserSuite extends FunSuite {
     val result = TweetsParser.parseLine("Pietie> the mess>age")
     assert(result === ("Pietie" -> "the mess>age"))
   }
+  test("lineParse should throw IAE on empty message"){
+    intercept[IllegalArgumentException] {
+      TweetsParser.parseLine("Pietie>")
+    }
+  }
 
   test("message too long should throw IAE") {
     intercept[IllegalArgumentException] {

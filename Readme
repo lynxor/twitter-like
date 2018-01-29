@@ -1,0 +1,8 @@
+Assumptions:
+    - Usernames can contain spaces
+    - Usernames can contain "follows" but not as a whole word because of the first assumption - this would be ambiguous
+    - A user can be listed as following nobody
+    - Tweets can contain ">"
+    - Tweets can't be empty
+
+

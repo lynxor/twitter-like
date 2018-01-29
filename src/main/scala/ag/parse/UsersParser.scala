@@ -25,7 +25,7 @@ object UsersParser {
     case name :: followsString :: Nil =>
       val follows = parseFollows(followsString)
       (name -> follows) :: follows.map(f => f -> Set[String]()).toList
-    case _ => Nil
+    case _ => throw new IllegalArgumentException("Invalid user line passed in")
   }
 
   private def parseFollows(followsString: String): Set[String] = split(followsString, ",").toSet match {
