@@ -1,8 +1,8 @@
 package ag.parse
 
 import org.scalatest.FunSuite
-import scala.util.parsing.combinator._
 
+import scala.io.Source
 
 class UsersParserSuite extends FunSuite {
   val expectedResult2Users = List(
@@ -36,13 +36,33 @@ class UsersParserSuite extends FunSuite {
   }
 
 
-  test("parsing multiple lines works in happy case") {
+  test("parsing lines works in happy case") {
     val result = UsersParser.parseLines(List("theuser follows otheruser", "otheruser follows theuser").toIterator)
     assert(result === Map("theuser" -> Set("otheruser"), "otheruser" -> Set("theuser")))
   }
 
-  test("parsing multiple lines, no follows for one user") {
+  test("parsing lines following more than one other user") {
+    val result = UsersParser.parseLines(List("theuser follows otheruser, otheruser2",
+      "otheruser follows theuser").toIterator)
+
+    assert(result === Map("theuser" -> Set("otheruser", "otheruser2"),
+      "otheruser" -> Set("theuser"),
+      "otheruser2" -> Set()))
+  }
+
+  test("parsing lines, no follows for one user") {
     val result = UsersParser.parseLines(List("theuser follows otheruser").toIterator)
     assert(result === Map("theuser" -> Set("otheruser"), "otheruser" -> Set()))
+  }
+
+  test("parsing from file") {
+    val source = Source.fromResource("given-users.txt")
+    val users = UsersParser.parseFile(source)
+    val expected = Map(
+      "Ward" -> Set("Alan", "Martin"),
+      "Alan" -> Set("Martin"),
+      "Martin" -> Set()
+    )
+    assert(users === expected)
   }
 }
