@@ -1,7 +1,5 @@
 package ag.parse
 
-import java.io.FileNotFoundException
-
 import org.scalatest.FunSuite
 
 import scala.io.Source
@@ -50,13 +48,6 @@ class TweetParserSuite extends FunSuite {
         Tweet("Ward","There are only two hard things in Computer Science: cache invalidation, naming things and off-by-1 errors."),
           Tweet("Alan","Random numbers should not be generated with a method chosen at random.")
     ))
-  }
-
-  //Slightly redundant
-  test("From non-extant file") {
-    intercept[FileNotFoundException] {
-      TweetsParser.parseFile("/tmp/this-file-does-not-exist.txt")
-    }
   }
 
   test("Tweet format") {

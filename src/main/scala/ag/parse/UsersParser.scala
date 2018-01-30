@@ -17,8 +17,6 @@ object UsersParser {
     case s: String if s.trim.length > 0 => s.trim
   }
 
-  def parseFile(filePath: String): List[User] = parseFile(Source.fromFile(filePath))
-
   def parseFile(source: Source): List[User] = parseLines(source.getLines)
 
   def parseLines(lines: Iterator[String]): List[User] = {

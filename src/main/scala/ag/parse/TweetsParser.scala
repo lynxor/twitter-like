@@ -21,5 +21,4 @@ object TweetsParser {
 
   def parseFile(lines: Iterator[String]) : List[ParseResult] = lines.map(parseLine).toList
   def parseFile(source: Source) : List[ParseResult] = parseFile(source.getLines())
-  def parseFile(filePath: String) : List[ParseResult] = parseFile(Source.fromFile(filePath))
 }
