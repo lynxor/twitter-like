@@ -19,6 +19,21 @@ class UsersParserSuite extends FunSuite {
     val result = UsersParser.parseLine("theuser follows otheruser, otheruser2")
     assert(result === expectedResult2Users)
   }
+  test("parsing a line fails if user contains the word 'follows'") {
+    intercept[IllegalArgumentException] {
+      UsersParser.parseLine("theuser follows a follows, otheruser2")
+    }
+  }
+  test("parsing a line works if user has a space") {
+    val result = UsersParser.parseLine("theuser follows D Malan, otheruser2")
+    assert(result ===
+      List("theuser" -> Set("D Malan", "otheruser2"), "D Malan" -> Set(), "otheruser2" -> Set()))
+
+    val result2 = UsersParser.parseLine("D Malan follows P van Wyk, A Pienaar")
+    assert(result2 ===
+      List("D Malan" -> Set("P van Wyk", "A Pienaar"), "P van Wyk" -> Set(), "A Pienaar" -> Set()))
+  }
+
 
   test("that the username parses from a line in with no follows") {
     val result = UsersParser.parseLine("theuser follows ")
