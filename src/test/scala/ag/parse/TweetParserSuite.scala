@@ -37,8 +37,9 @@ class TweetParserSuite extends FunSuite {
     }
   }
 
-  test("Multiple lines") {
-    TweetsParser.parseFile(List("Pietie> themessage", "Jannie> other message").toIterator)
+  test("Multiple lines work and ignore empty lines") {
+    val result = TweetsParser.parseFile(List("Pietie> themessage", "Jannie> other message", " \n\t").toIterator)
+    assert(result === List(Tweet("Pietie", "themessage"), Tweet("Jannie", "other message")))
   }
 
   test("From file") {

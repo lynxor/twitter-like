@@ -13,7 +13,6 @@ object Main {
     args.toList match {
       case usersFile :: tweetsFile :: Nil => Try(Source.fromFile(usersFile) -> Source.fromFile(tweetsFile)) match {
         case Success((userSource, tweetSource)) =>
-          logger.info("Got input files. Running...")
           run(userSource, tweetSource)
         case Failure(e) => exitWithError("Invalid file(s) passed. Pass in full path to your users and tweets file as args.", e)
       }

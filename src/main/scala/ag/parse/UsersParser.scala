@@ -19,10 +19,12 @@ object UsersParser {
 
   def parseFile(source: Source): List[User] = parseLines(source.getLines)
 
+  //Main logic in here.  For each line get all users mentioned. Then combine the duplicates using
+  //a Map. Final result is mapped to the User class
   def parseLines(lines: Iterator[String]): List[User] = {
     val initialValue: Map[String, Set[String]] = Map[String, Set[String]]().withDefault(_ => Set())
 
-    val unioned = lines.flatMap(parseLine).foldLeft(initialValue)((acc, value) => {
+    val unioned = lines.filter(!_.trim.isEmpty).flatMap(parseLine).foldLeft(initialValue)((acc, value) => {
       val (user, follows) = value
       acc + (user -> (acc(user) ++ follows))
     })
@@ -35,7 +37,7 @@ object UsersParser {
 
   //Return ALL users mentioned in line. Username can contain follows but not as a word
   def parseLine(line: String): List[ParseResult] = {
-    if (line.isEmpty) throw new IllegalArgumentException("Empty user line detected")
+    if (line.isEmpty) throw new IllegalArgumentException("Empty user line detected") //will only happen when calling directly
     split(line, """\bfollows\b""") match {
       case name :: Nil => List(name -> Set())
       case name :: followsString :: Nil =>

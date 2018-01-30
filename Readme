@@ -1,9 +1,20 @@
+Build, test and run:
+    - Install Java 8
+    - Install sbt
+    - in the project dir:
+        > sbt compile
+        > sbt test
+        > ./run /path/to/userfile /path/to/tweetfile    #linux only
+        OR
+        > sbt "run /path/to/userfile /path/to/tweetfile"
+
 Assumptions:
     - Usernames can contain spaces
     - Usernames can contain "follows" but not as a whole word because of the first assumption - this would be ambiguous
     - Username should match /[a-zA-Z\s-]+/
+    - Empty/white space lines are filtered out
     - A user can be listed as following nobody
-    - empty users (,,,) are removed
+    - empty users (user follows ,,,) are ignored
     - extra whitespace is cleaned up
     - Tweets can contain ">"
     - Tweets can't be empty
