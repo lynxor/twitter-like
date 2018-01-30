@@ -23,6 +23,9 @@ class TweetParserSuite extends FunSuite {
     intercept[IllegalArgumentException] {
       TweetsParser.parseLine("Pietie>")
     }
+    intercept[IllegalArgumentException] {
+      TweetsParser.parseLine("Pietie> ")
+    }
   }
 
   test("message too long should throw IAE") {
