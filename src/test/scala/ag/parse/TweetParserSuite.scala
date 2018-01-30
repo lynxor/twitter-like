@@ -9,17 +9,17 @@ import scala.io.Source
 class TweetParserSuite extends FunSuite {
   test("lineParse should work, simple case") {
     val result = TweetsParser.parseLine("Pietie> the message")
-    assert(result === ("Pietie" -> "the message"))
+    assert(result === Tweet("Pietie", "the message"))
   }
 
   test("lineParse should work with extra whitespace") {
     val result = TweetsParser.parseLine(" Pietie>  the message ")
-    assert(result === ("Pietie" -> "the message"))
+    assert(result === Tweet("Pietie", "the message"))
   }
 
   test("lineParse should work, even with a > in the message") {
     val result = TweetsParser.parseLine("Pietie> the mess>age")
-    assert(result === ("Pietie" -> "the mess>age"))
+    assert(result === Tweet("Pietie", "the mess>age"))
   }
   test("lineParse should throw IAE on empty message"){
     intercept[IllegalArgumentException] {
@@ -46,9 +46,9 @@ class TweetParserSuite extends FunSuite {
   test("From file") {
     val results = TweetsParser.parseFile(Source.fromResource("given-tweets.txt"))
     assert(results === List(
-      "Alan" -> "If you have a procedure with 10 parameters, you probably missed some.",
-      "Ward" -> "There are only two hard things in Computer Science: cache invalidation, naming things and off-by-1 errors.",
-      "Alan" -> "Random numbers should not be generated with a method chosen at random."
+      Tweet("Alan","If you have a procedure with 10 parameters, you probably missed some."),
+        Tweet("Ward","There are only two hard things in Computer Science: cache invalidation, naming things and off-by-1 errors."),
+          Tweet("Alan","Random numbers should not be generated with a method chosen at random.")
     ))
   }
 
@@ -57,5 +57,9 @@ class TweetParserSuite extends FunSuite {
     intercept[FileNotFoundException] {
       TweetsParser.parseFile("/tmp/this-file-does-not-exist.txt")
     }
+  }
+
+  test("Tweet format") {
+    assert(Tweet("user1", "message 1").format === "\t@user1: message 1")
   }
 }

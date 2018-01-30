@@ -1,22 +1,37 @@
 package ag.parse
 
 import scala.io.Source
-import ParseUtils._
+
+case class User(name: String, follows: Set[String] = Set())
+
+object User {
+  //convenience for test cases
+  def apply(name: String, follows: String*) = new User(name, follows.toSet)
+}
+
 
 object UsersParser {
   type ParseResult = (String, Set[String])
-  type ResultType = Map[String, Set[String]]
+  def split(str: String, separator: String): List[String] = str.split(separator).toList.collect {
+    case s: String if s.trim.length > 0 => s.trim
+  }
 
-  def parseFile(filePath: String): ResultType = parseFile(Source.fromFile(filePath))
-  def parseFile(source: Source): ResultType = parseLines(source.getLines)
+  def parseFile(filePath: String): List[User] = parseFile(Source.fromFile(filePath))
 
-  def parseLines(lines: Iterator[String]) : ResultType = {
-     val initialValue : ResultType = Map[String, Set[String]]().withDefault(_ => Set())
+  def parseFile(source: Source): List[User] = parseLines(source.getLines)
 
-     lines.flatMap(parseLine).foldLeft(initialValue)( (acc, value) => {
-        val (user, follows) = value
-        acc + (user -> (acc(user) ++ follows))
-     })
+  def parseLines(lines: Iterator[String]): List[User] = {
+    val initialValue: Map[String, Set[String]] = Map[String, Set[String]]().withDefault(_ => Set())
+
+    val unioned = lines.flatMap(parseLine).foldLeft(initialValue)((acc, value) => {
+      val (user, follows) = value
+      acc + (user -> (acc(user) ++ follows))
+    })
+
+    unioned.map(usr => {
+      val (name, follows) = usr
+      User(name, follows)
+    }).toList
   }
 
   //Return ALL users mentioned in line. Username can contain follows but not as a word

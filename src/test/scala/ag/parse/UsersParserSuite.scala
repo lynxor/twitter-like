@@ -38,30 +38,37 @@ class UsersParserSuite extends FunSuite {
 
   test("parsing lines works in happy case") {
     val result = UsersParser.parseLines(List("theuser follows otheruser", "otheruser follows theuser").toIterator)
-    assert(result === Map("theuser" -> Set("otheruser"), "otheruser" -> Set("theuser")))
+    assert(result === List(User("theuser", "otheruser"), User("otheruser", "theuser")))
   }
 
   test("parsing lines following more than one other user") {
     val result = UsersParser.parseLines(List("theuser follows otheruser, otheruser2",
       "otheruser follows theuser").toIterator)
 
-    assert(result === Map("theuser" -> Set("otheruser", "otheruser2"),
-      "otheruser" -> Set("theuser"),
-      "otheruser2" -> Set()))
+    assert(result === List(
+      User("theuser", "otheruser", "otheruser2"),
+      User("otheruser", "theuser"),
+      User("otheruser2"),
+    ))
   }
 
   test("parsing lines, no follows for one user") {
     val result = UsersParser.parseLines(List("theuser follows otheruser").toIterator)
-    assert(result === Map("theuser" -> Set("otheruser"), "otheruser" -> Set()))
+    assert(result === List(User("theuser", "otheruser"), User("otheruser")))
   }
 
-  test("parsing from file") {
+  test("parsing lines, user listed more than once. Combined follows correctly") {
+    val result = UsersParser.parseLines(List("a follows b", "a follows c", "a follows d").toIterator)
+    assert(result === List(User("a", "b", "c", "d"), User("b"), User("c"), User("d")))
+  }
+
+  test("parsing from file works, and has the correct order") {
     val source = Source.fromResource("given-users.txt")
     val users = UsersParser.parseFile(source)
-    val expected = Map(
-      "Ward" -> Set("Alan", "Martin"),
-      "Alan" -> Set("Martin"),
-      "Martin" -> Set()
+    val expected = List(
+      User("Ward", Set("Alan", "Martin")),
+      User("Alan", Set("Martin")),
+      User("Martin")
     )
     assert(users === expected)
   }

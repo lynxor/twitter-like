@@ -1,9 +1,14 @@
 Assumptions:
     - Usernames can contain spaces
     - Usernames can contain "follows" but not as a whole word because of the first assumption - this would be ambiguous
+    - Username should match /[a-zA-Z\s-]+/
     - A user can be listed as following nobody
+    - empty users (,,,) are removed
+    - extra whitespace is cleaned up
     - Tweets can contain ">"
     - Tweets can't be empty
-    - Program should stop if format of either of the files is invalid?
+    - Program should stop if format of either of the files is invalid
+    - Tweets from users not mentioned in the users file are ignored
+    
 
 
