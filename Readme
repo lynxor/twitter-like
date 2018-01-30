@@ -7,6 +7,9 @@ Build, test and run:
         > ./run /path/to/userfile /path/to/tweetfile    #linux only
         OR
         > sbt "run /path/to/userfile /path/to/tweetfile"
+        
+Notes:
+    - Stacktraces are logged to twitter-like.log and not displayed to end user
 
 Assumptions:
     - Usernames can contain spaces
@@ -18,7 +21,8 @@ Assumptions:
     - extra whitespace is cleaned up
     - Tweets can contain ">"
     - Tweets can't be empty
-    - Program should stop if format of either of the files is invalid
+    - Program should stop if format of either of the files is invalid. The user is assumed
+        to have knowledge of the file format
     - Tweets from users not mentioned in the users file are ignored
     
 
