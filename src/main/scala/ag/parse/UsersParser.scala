@@ -1,21 +1,17 @@
 package ag.parse
 
 import scala.io.Source
-import scala.util.parsing.combinator._
-
-case class User(name: String, follows: Set[User] = Set())
-
+import ParseUtils._
 
 object UsersParser {
   type ParseResult = (String, Set[String])
+  type ResultType = Map[String, Set[String]]
 
-  private def split(str: String, separator: String): List[String] = str.split(separator).toList.collect {
-    case s: String if s.trim.length > 0 => s.trim
-  }
-  def parseFile(filePath: String) = parseLines(Source.fromFile(filePath).getLines)
+  def parseFile(filePath: String): ResultType = parseFile(Source.fromFile(filePath))
+  def parseFile(source: Source): ResultType = parseLines(source.getLines)
 
-  def parseLines(lines: Iterator[String]) = {
-     val initialValue = Map[String, Set[String]]().withDefault(_ => Set())
+  def parseLines(lines: Iterator[String]) : ResultType = {
+     val initialValue : ResultType = Map[String, Set[String]]().withDefault(_ => Set())
 
      lines.flatMap(parseLine).foldLeft(initialValue)( (acc, value) => {
         val (user, follows) = value
@@ -23,13 +19,13 @@ object UsersParser {
      })
   }
 
-  //Return ALL users mentioned in line
-  def parseLine(line: String): List[ParseResult] = split(line, "follows") match {
+  //Return ALL users mentioned in line. Username can contain follows but not as a word
+  def parseLine(line: String): List[ParseResult] = split(line, """\bfollows\b""") match {
     case name :: Nil => List(name -> Set())
     case name :: followsString :: Nil =>
       val follows = parseFollows(followsString)
       (name -> follows) :: follows.map(f => f -> Set[String]()).toList
-    case _ => Nil
+    case _ => throw new IllegalArgumentException("Invalid user line passed in")
   }
 
   private def parseFollows(followsString: String): Set[String] = split(followsString, ",").toSet match {
